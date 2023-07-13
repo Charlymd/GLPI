@@ -1,14 +1,14 @@
 version: '3'
 services:
         glpi-web:
-                build: /home/ayman/GLPI/
+                build: ~/GLPI/
                 container_name: glpi-web
                 ports:
                         - 80:80
                 networks:
                         - glpi-net
                 env_file:
-                        - /home/ayman/GLPI/env_files/env-glpi.env
+                        - ~/GLPI/env_files/env-glpi.env
                 secrets:
                         - db_password
                 depends_on:
@@ -20,17 +20,17 @@ services:
                 networks:
                         - glpi-net
                 volumes:
-                        - /home/ayman/GLPI/mysql:/var/lib/mysql
+                        - ~/GLPI/mysql:/var/lib/mysql
                 env_file:
-                        - /home/ayman/GLPI/env_files/env-db-glpi.env
+                        - ~/GLPI/env_files/env-db-glpi.env
                 secrets:
                         - db_password
                         - db_root_password
 secrets:
         db_password:
-                file: /home/ayman/GLPI/mdp/db_password.txt
+                file: ~/GLPI/mdp/db_password.txt
         db_root_password:
-                file: /home/ayman/GLPI/mdp/root_mdp.txt
+                file: ~/GLPI/mdp/root_mdp.txt
 networks:
         glpi-net:
 

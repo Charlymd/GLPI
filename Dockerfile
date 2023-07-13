@@ -1,16 +1,15 @@
-# Utilisation d'une image de base Debian 
-FROM debian:latest
+# Utilisation d'une image de base Debian 12
+FROM debian:12
 
 # Mis à jour des paquets du système
 RUN apt-get update && apt-get upgrade -y
 
 # Installation des dépendances nécessaires pour GLPI
-RUN apt-get install -y apache2 mariadb-client wget gnupg2 && \
-apt-get install -y lsb-release apt-transport-https ca-certificates && \
+RUN apt-get install -y apache2 mariadb-client wget gnupg2  -y lsb-release apt-transport-https ca-certificates && \
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && \
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
 apt-get update && \
-DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated php8.1 \
+apt-get install -y  php8.1 \
 libapache2-mod-php8.1 \
 php8.1-mysql \
 php8.1-ldap \
@@ -31,14 +30,15 @@ php8.1-memcached
 
 # Téléchargement de la dernière version de GLPI depuis le site officiel
 RUN wget -O glpi.tar.gz https://github.com/glpi-project/glpi/releases/download/10.0.9/glpi-10.0.9.tgz && \
-tar xzf glpi.tar.gz && \
-rm glpi.tar.gz && \
-mv glpi /var/www/html && \
-chown -R www-data:www-data /var/www/html/glpi && \
-chmod -R 755 /var/www/html/glpi
+tar xzf glpi.tar.gz -C /var/www/html/ && \
+rm glpi.tar.gz 
 
 #Installation des plugins
 COPY ./plugins/. /var/www/html/glpi/plugins/
+
+#Droit d'accès au dossier GLPI
+RUN chown -R www-data:www-data /var/www/html/glpi && \
+chmod -R 755 /var/www/html/glpi
 
 # Configuration d'Apache pour servir GLPI
 RUN a2enmod rewrite && \
