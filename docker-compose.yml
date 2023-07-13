@@ -28,9 +28,9 @@ services:
                         - db_root_password
 secrets:
         db_password:
-                file: ~/GLPI/mdp/db_password.txt
+                file: ~/GLPI/mdp/db_password.secret.example
         db_root_password:
-                file: ~/GLPI/mdp/root_mdp.txt
+                file: ~/GLPI/mdp/root_mdp.secret.example
 networks:
         glpi-net:
 

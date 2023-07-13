@@ -1,13 +1,15 @@
-# Utilisation d'une image de base Debian 12
+# Using a debian 12 image
 FROM debian:12
 
-# Mis à jour des paquets du système
+# Update system packages
 RUN apt-get update && apt-get upgrade -y
 
-# Installation des dépendances nécessaires pour GLPI
+# Installation of dependencies required for GLPI
 RUN apt-get install -y apache2 mariadb-client wget gnupg2  -y lsb-release apt-transport-https ca-certificates && \
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && \
+# GPG key for PHP packages
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+# Installation PHP mods
 apt-get update && \
 apt-get install -y  php8.1 \
 libapache2-mod-php8.1 \
@@ -28,24 +30,24 @@ php8.1-soap \
 php8.1-ldap \
 php8.1-memcached
 
-# Téléchargement de la dernière version de GLPI depuis le site officiel
+# Installation of GLPI
 RUN wget -O glpi.tar.gz https://github.com/glpi-project/glpi/releases/download/10.0.9/glpi-10.0.9.tgz && \
 tar xzf glpi.tar.gz -C /var/www/html/ && \
 rm glpi.tar.gz 
 
-#Installation des plugins
+# Installation of necessary  plugins
 COPY ./plugins/. /var/www/html/glpi/plugins/
 
-#Droit d'accès au dossier GLPI
+# Permission for HTML directory
 RUN chown -R www-data:www-data /var/www/html/glpi && \
 chmod -R 755 /var/www/html/glpi
 
-# Configuration d'Apache pour servir GLPI
+# Configuration of Apache for GLPI
 RUN a2enmod rewrite && \
     echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/glpi/' /etc/apache2/sites-available/000-default.conf && \
     echo "Alias /glpi /var/www/html/glpi" >> /etc/apache2/apache2.conf && \
     sed -i 's/Directory \/var\/www\/html/Directory \/var\/www\/html\/glpi/' /etc/apache2/apache2.conf
 
-# Démarrage d'Apache en tant que processus principal
+# Start Apach as main process
 CMD ["apachectl", "-D", "FOREGROUND"]
