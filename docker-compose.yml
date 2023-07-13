@@ -8,7 +8,7 @@ services:
                 networks:
                         - glpi-net
                 env_file:
-                        - ~/GLPI/env_files/env-glpi.env
+                        - ~/GLPI/env_files/env-glpi.env.example
                 secrets:
                         - db_password
                 depends_on:
@@ -22,7 +22,7 @@ services:
                 volumes:
                         - ~/GLPI/mysql:/var/lib/mysql
                 env_file:
-                        - ~/GLPI/env_files/env-db-glpi.env
+                        - ~/GLPI/env_files/env-db-glpi.env.example
                 secrets:
                         - db_password
                         - db_root_password
